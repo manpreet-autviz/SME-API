@@ -1,5 +1,5 @@
 <template>
-  <DashboardHeader title="Captive Portal" :icon="icon.captiveportal">
+  <DashboardHeader title="Landing Page Builder" :icon="icon.captiveportal">
     <template v-slot:aside>
       <div class="bg-[#DCE9E3] px-3 py-2 rounded-[0.327rem] flex items-center">
         <span class="font-poppins font-medium md:text-[1rem] text-[0.60rem] text-[#959CBD]">Today: <span
@@ -25,6 +25,7 @@
       </DashboardTableTitle>
       <SmeTable :tableName="tableName" :tableHeaderData="routerTableHeaders">
         <template v-slot:tableBodyData>
+          <template v-if="paginatedTableData.length">
           <div v-for="item in routers" :key="item.id"
             class="table-layout-tr py-2 my-3 uppercase rounded-[0.337rem] flex items-center justify-between text-[#B5B5C3] font-poppins font-semibold text-[0.673rem]">
             <td>
@@ -66,7 +67,12 @@
             </td>
           </div>
         </template>
+        <div v-else class="w-full text-center text-[12px] mt-4"><b>No Record found</b></div>
+        </template>
       </SmeTable>
+      <div v-if="isLoading" class="spinner-container">
+        <div class="spinner"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -85,6 +91,8 @@ import SmeTable from '../../components/reusable/SmeTable.vue';
 import DashboardTableTitle from '../../components/markup/DashboardTableTitle.vue';
 import moment from 'moment';
 import DashboardHeader from '../../components/markup/DashboardHeader.vue'
+import instance from '@/axios-interceptor';
+import { mapGetters } from 'vuex';
 
 export default defineComponent({
   name: 'DashboardPage',
@@ -118,6 +126,10 @@ export default defineComponent({
   },
   data() {
     return {
+      isLoading: false,
+      captiveList:[{
+
+      }],
       searchQuery: '',
       apiData: [],
       propLoaded: false,
@@ -126,8 +138,14 @@ export default defineComponent({
     }
   },
   computed: {
+    ...mapGetters(["loggedInUser"]),
     today() {
       return moment(Date.now()).format('MMMM Do');
+    },
+    paginatedTableData(): any[] {
+      const startIndex = (this.page - 1) * this.perSize;
+      const endIndex = startIndex + this.perSize;
+      return this.captiveList.slice(startIndex, endIndex);
     },
   },
   methods: {
@@ -137,6 +155,23 @@ export default defineComponent({
     getDate(date: Date | number) {
       return moment(date).calendar();
     },
+    getCaptiveData() {
+      this.isLoading = true;
+      instance
+        .get(`sme/${this.loggedInUser.sme}/captive-portal/`)
+        .then((response) => {
+          this.captiveList = response.data;
+          this.propLoaded = true;
+          this.isLoading = false;
+        })
+        .catch((error) => {
+          this.isLoading = false;
+          console.log(error);
+        });
+    },
+  },
+  mounted() {
+    this.getCaptiveData();
   },
 });
 </script>

@@ -11,6 +11,7 @@
               class="font-poppins lg:font-bold lg:text-[19px] font-normal text-[15px] mt-2 tracking-widest text-primary text-center">
               ARED SME Platform
             </h1>
+            <SmeSnackbar v-if="showSnackbar" class="left-[0] relative bottom-0 top-[20px] text-red-600" :message="message" @buttonClick="handleCloseSnackbar" />
             <form class="mt-10">
               <TextField name="email"
                 class="mb-5 font-normal border-none border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block w-full focus:ring-1"
@@ -67,8 +68,7 @@
       <div class="flex justify-center items-center">
         <auth-right-image />
       </div>
-      <SmeSnackbar v-if="showSnackbar" message="Logged In Success, Check your Email to get your One Time Password(OTP)"
-        @buttonClick="handleCloseSnackbar" />
+     
     </div>
   </div>
 </template>
@@ -104,6 +104,11 @@ export default defineComponent({
     TextField,
     SmeSnackbar,
   },
+  data() {
+    return {
+      message: ''
+    }
+  },
   setup() {
     const formData = ref({
       email: '',
@@ -124,8 +129,6 @@ export default defineComponent({
   methods: {
     handleLogin() {
       if (this.formData.email !== '' && this.formData.password !== '') {
-        this.showSnackbar = true;
-
         API_URL
           .post(`auth/jwt/create/`, {
             phone: this.formData.email,
@@ -133,16 +136,25 @@ export default defineComponent({
           })
           .then((response) => {
             if (response) {
+              console.log(response, "d")
               const token = response.data.access;
               localStorage.setItem('access_token', token);
               instance.post(`2fa/`)
                 .then(res => {
-                  router.push({ path: '/otp' });
+                  this.showSnackbar = true;
+                  this.message = res.data.detail;
+                  setTimeout(() => {
+                    router.push({ path: '/otp' });
+                  }, 2000)
+
                 });
             }
           })
           .catch((error) => {
-            console.log(error);
+            this.showSnackbar = true;
+            this.message = error.response.data.detail;
+
+
           });
 
       }

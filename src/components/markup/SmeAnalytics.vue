@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-white lg:w-[54%] min-h-[21.432rem] rounded-[0.938rem] py-3 px-6 shadow lg:mb-0 mb-5"
+    class="bg-white lg:w-[49%] min-h-[21.432rem] rounded-[0.938rem] py-3 px-6 shadow lg:mb-0 mb-5"
   >
     <span class="font-poppins font-semibold md:text-[1.01rem] text-[0.8rem] text-[#212121]"
       >Analytics</span

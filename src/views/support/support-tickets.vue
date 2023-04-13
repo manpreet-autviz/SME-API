@@ -347,7 +347,6 @@ export default defineComponent({
         // Check if name or age contain the search query
         return ticketId.includes(query) || message.includes(query) || status.includes(query) || created.includes(query);
       });
-      console.log(filteredData, "dfg")
       return filteredData;
     },
     paginatedTableData(): any[] {

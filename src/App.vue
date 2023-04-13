@@ -95,6 +95,9 @@ export default defineComponent({
       else if (this.activeTab == 'Captive Portal') {
         return dashboardHeadericon.captiveportal
       }
+      else if (this.activeTab == 'Home') {
+        return dashboardHeadericon.dashboard
+      }
       else if (this.activeTab == 'Vouchers') {
         return dashboardHeadericon.voucher
       }
@@ -133,7 +136,6 @@ export default defineComponent({
       this.isToggle = !this.isToggle
     },
     handleSetActive(id: number, title: string) {
-
       this.activeId = id;
       localStorage.setItem('activeId',id.toString());
       this.activeTab = title

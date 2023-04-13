@@ -57,7 +57,6 @@ export default defineComponent({
     return  this.pageNumber as number * this.perPageItems >=this.ApiData?.length
   },
   totalPages(){
-    console.log(this.perPageItems as number,"here")
     return Math.ceil(this.ApiData?.length /  this.perPageItems as number )
 
   }

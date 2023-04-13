@@ -4,6 +4,7 @@
       <button
         type="button"
         class="bg-[#4E8D6D] md:px-6 px-4 py-2 rounded-[0.327rem] flex items-center"
+        @click="showModal = true"
       >
         <span
           class="font-poppins font-semibold md:text-[1rem] text-[0.8rem] text-[#fff] flex"
@@ -16,6 +17,7 @@
           Add Media</span
         >
       </button>
+      <addMediaform v-if="showModal" @close="closeModal()"></addMediaform>
     </template>
   </DashboardHeader>
   <div class="w-full my-3">
@@ -51,7 +53,7 @@
             :key="item.id"
             class="table-layout-tr py-2 my-3 uppercase rounded-[0.337rem] flex items-center justify-between text-[#B5B5C3] font-poppins font-semibold text-[0.673rem]"
           >
-            <td>
+            <td v-bind:title="item.file_type">
               <div class="flex items-center">
                 <div
                   class="bg-[#F3F6F9] w-[2.806rem] h-[2.806rem] rounded-[0.337rem] flex items-center justify-center"
@@ -143,13 +145,14 @@ import DashboardTableTitle from "../../components/markup/DashboardTableTitle.vue
 import moment from "moment";
 import axios from "axios";
 import instance from "@/axios-interceptor";
-
+import addMediaform from "./addMediaform.vue";
 export default defineComponent({
   name: "DashboardPage",
   components: {
     DashboardTableTitle,
     SmeTable,
     DashboardHeader,
+    addMediaform
   },
   setup() {
     const icon = ref({ ...dashboardHeadericon });
@@ -180,6 +183,7 @@ export default defineComponent({
 
   data() {
     return {
+      showModal: false,
       searchQuery: '',
       propLoaded:false,
       page:1,
@@ -248,6 +252,10 @@ export default defineComponent({
           console.log(error);
         });
     },
+    closeModal(){
+      this.showModal = false;
+      this.getFilesData();
+    }
   },
   mounted() {
     this.getFilesData();
@@ -276,7 +284,6 @@ export default defineComponent({
         // Check if name or age contain the search query
         return file_type.includes(query) || realm.includes(query) || realm_name.includes(query) || status.includes(query);
       });
-      console.log(filteredData,"dfg")
       return filteredData;
     },
     paginatedTableData(): any[] {

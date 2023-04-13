@@ -54,7 +54,7 @@
       <div class="flex justify-center items-center">
         <auth-right-image />
       </div>
-      <SmeSnackbar v-if="showSnackbar" message="Logged In Success, Check your Email to get your One Time Password(OTP)"
+      <SmeSnackbar v-if="showSnackbar" message="Check your Email to Recover Password"
         @buttonClick="handleCloseSnackbar" />
     </div>
   </div>
@@ -106,14 +106,17 @@ export default defineComponent({
   methods: {
     async handleForgotPassword() {
       if (this.formData.email !== '') {
-        this.showSnackbar = true;
+
         const formData = {
           email: this.formData.email,
         }
         try {
           const response = await instance.post('auth/users/reset_password/', formData);
-          console.log(response.data);
-          router.push({ path: '/' });
+          this.showSnackbar = true;
+          setTimeout(() => {
+            router.push({ path: '/' });
+          }, 2000)
+         
         } catch (error) {
           console.error(error);
         }

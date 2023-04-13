@@ -53,7 +53,7 @@
       <div class="flex justify-center items-center">
         <auth-right-image />
       </div>
-      <SmeSnackbar v-if="showSnackbar" message="Logged In Successfully, Welcome to SME"
+      <SmeSnackbar v-if="showSnackbar" :message="message"
         @buttonClick="handleCloseSnackbar" />
     </div>
   </div>
@@ -89,6 +89,11 @@ export default defineComponent({
     TextField,
     SmeSnackbar,
   },
+  data() {
+    return{
+      message:''
+    }
+  },
   setup() {
     const formData = ref({
       otp: '',
@@ -119,7 +124,8 @@ export default defineComponent({
             }
           })
           .catch((error) => {
-            console.log(error);
+            this.showSnackbar = true;
+            this.message = error.response.data.detail;
           });
 
       }

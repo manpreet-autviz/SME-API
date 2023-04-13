@@ -10,14 +10,15 @@ import CaptivePortalPage from '../views/captive/captive-portal.vue';
 import FileMediaPage from '../views/File/file-media.vue';
 import SupportTicketsPage from '../views/support/support-tickets.vue';
 import BillingsPage from '../views/billings/billings.vue';
-
+import HomePage from '../views/home/home.vue';
+import store from "../store";
 
 const title = 'Ared SME';
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    name: 'home',
+    name: 'login',
     component: LoginPage,
     meta: {
       title: `${title} - Login`,
@@ -48,6 +49,15 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: `${title} - SIGNUP`
      
+    },
+  },
+  {
+    path: '/home',
+    name: 'home',
+    component: HomePage,
+    meta: {
+      title: `${title} - Home`,
+      requireAuth:true
     },
   },
   {
@@ -130,15 +140,13 @@ router.beforeEach((to, from, next) => {
   } else {
     document.title = (to.meta?.title as string) ?? title;
   }
-  if (to.matched.some(record => record.meta.requireAuth)) {
-    if (!isAuthenticated) {
-      next({ name: 'home' });
-    } else {
-      
-      next();
-    }
-  } else {
-    next();
+  if (to.matched.some(record => record.meta.requireAuth) && !isAuthenticated) {
+    next('/')
+  } else if ((to.path === '/' || to.path === '/signup'|| to.path === '/forgot-password') && isAuthenticated) {
+    next('/dashboard') 
+  } 
+  else {
+    next() // 
   }
   next();
 });

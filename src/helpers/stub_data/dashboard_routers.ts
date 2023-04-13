@@ -421,6 +421,7 @@ export const support = [
 
 
 export const dashboardHeadericon = {
+  dashboard:require('../../assets/dashboard.svg'),
   accountIcon: require('../../assets/account-icon.svg'),
   fileIcon:require('../../assets/all-media-icon.svg'),
   voucher:require('../../assets/voucher-sidemenu.svg'),

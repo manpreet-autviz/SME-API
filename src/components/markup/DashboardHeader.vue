@@ -19,7 +19,7 @@
       </div>
     </div>
     <div class="flex flex-col md:block hidden">
-      <div class="flex">
+      <div class="flex items-center">
         <img
           :src="icon"
           alt="africa"
